@@ -1,0 +1,38 @@
+{
+    "name": "adolfbagenda/investmentclub",
+    "description": "An Investment Club  Management system",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Adolf",
+            "email": "bagenda.adolf@gmail.com"
+        }
+    ],
+    "require": {
+        "jeroennoten/laravel-adminlte": "^3.0",
+        "spatie/laravel-permission": "3.0",
+        "doctrine/dbal": "^2.10"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^4.3",
+        "mockery/mockery": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "adolfbagenda\\InvestmentClub\\": "src/"
+        }
+
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "adolfbagenda\\InvestmentClub\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "adolfbagenda\\InvestmentClub\\InvestmentClubBaseServiceProvider"
+            ]
+        }
+    }
+}
