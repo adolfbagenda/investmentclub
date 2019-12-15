@@ -4,6 +4,7 @@ namespace adolfbagenda\InvestmentClub\Http\Controllers;
 
 use File;
 use adolfbagenda\InvestmentClub\Member;
+use adolfbagenda\InvestmentClub\Account;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Redirect;
@@ -79,6 +80,14 @@ class MembersController extends Controller
         $member->status = request()->input('status');
         $member->status_reason = request()->input('status_reason');
         $member->save();
+        $account = new Account;
+        $account->member_id = $member->id;
+        $account->open_date = request()->input('open_date')??NULL;
+        $account->amount = request()->input('amount')??'0';
+        $account->fine = request()->input('fine')??'0';
+        $account->last_saving = request()->input('last_saving')??'0';
+        $account->status = request()->input('status');
+        $account->save();
         $alerts = [
         'bustravel-flash'         => true,
         'bustravel-flash-type'    => 'success',
