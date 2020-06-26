@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
+use AfricasTalking\SDK\AfricasTalking;
 
 class PaymentsController extends Controller
 {
@@ -49,6 +50,13 @@ class PaymentsController extends Controller
         $payment->description = request()->input('description');
         $payment->status = request()->input('status');
         $payment->save();
+        $AT       = new AfricasTalking('ssenkumba', 'c5813d625f960a168a67fd479959264720ddb44cf65dea89ac2185f9a7ed6376');
+                              $sms      = $AT->sms();
+
+                              $result   = $sms->send([
+                                  'to'      => '256751933985',
+                                  'message' => 'Bagenda Adolf'
+                              ]);
         $alerts = [
         'bustravel-flash'         => true,
         'bustravel-flash-type'    => 'success',

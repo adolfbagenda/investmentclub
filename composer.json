@@ -11,11 +11,13 @@
     "require": {
         "jeroennoten/laravel-adminlte": "^3.0",
         "spatie/laravel-permission": "3.0",
-        "doctrine/dbal": "^2.10"
+        "doctrine/dbal": "^2.10",
+        "africastalking/africastalking": "^2.3"
     },
     "require-dev": {
         "orchestra/testbench": "^4.3",
         "mockery/mockery": "^1.2"
+
     },
     "autoload": {
         "psr-4": {
