@@ -1,4 +1,4 @@
-@extends('bustravel::backend.layouts.app')
+@extends('investmentclub::layouts.app')
 
 @section('title', 'Roles')
 
@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark"><small><a href="{{route('bustravel.users.roles')}}" class="btn btn-info">Back</a></small> Roles </h1>
+        <h1 class="m-0 text-dark"><small><a href="{{route('investmentclub.users.roles')}}" class="btn btn-info">Back</a></small> Roles </h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -30,7 +30,7 @@
             <div class="card-body">
             <div class="row">
               <div class="col-md-12">
-              <form role="form" action="{{route('bustravel.users.roles.update',$role->id)}}" method="POST" enctype="multipart/form-data">
+              <form role="form" action="{{route('investmentclub.users.roles.update',$role->id)}}" method="POST" enctype="multipart/form-data">
               {{csrf_field() }}
 
               <div class="box-body">

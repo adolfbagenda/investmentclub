@@ -49,15 +49,15 @@
                  <table id="example1" class="table table-bordered table-hover table-striped dataTable" role="grid" aria-describedby="example1_info">
                         <thead>
                             <tr>
-                                <th>Status</th>
-                                <th>Picture</th>
-																<th>Account No #</th>
-																<th>Name</th>
-																<th>Amount</th>
-																<th>Fine</th>
-																<th>Open Date</th>
-                                <th>Updated </th>
-                                <th>Action</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Picture</th>
+																<th scope="col">Account No #</th>
+																<th scope="col">Name</th>
+																<th scope="col">Amount</th>
+																<th scope="col">Fine</th>
+																<th scope="col">Open Date</th>
+                                <th scope="col">Updated </th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -65,15 +65,15 @@
                         @foreach ($accounts as $account)
                             <tr>
                               <td>@if($account->status==1)
-                                    <a href="#" class="btn btn-xs btn-success"> <i class="fas fa-check"></i></a>
+                                    <span class="badge badge-success"> <span class="fas fa-check"></span></span>
                                   @else
-                                  <a href="#" class="btn btn-xs btn-danger"> <i class="fas fa-times"></i></a>
+                                  <span class="badge badge-danger"> <span class="fas fa-times"></span></span>
 
                                   @endif
                                </td>
                                <td>
                                @if($account->account_member->picture)
-                                    <img src="{{url('/members/photos/'.$account->account_member->picture) }}" width="50px"/>
+                                    <img src="{{url('storage/photo_thumbs/'.$account->account_member->picture) }}" width="50px"/>
                                   @endif
                                 </td>
                                 <td>{{'ACC/'.sprintf('%05d', $account->id)}}</td>
@@ -83,7 +83,7 @@
                                 <td>{{Carbon\Carbon::parse($account->open_date)->format('d-m-Y')}}</td>
                                 <td>{{Carbon\Carbon::parse($account->updated_at)->format('d-m-Y')}}</td>
                                 <td><a title="Edit" href="{{route('investmentclub.accounts.edit',$account->id)}}"><i class="fas fa-edit"></i></a>
-                                    <a title="Delete" onclick="return confirm('Are you sure you want to delete this Employee')" href="{{route('investmentclub.accounts.delete',$account->id)}}"><span style="color:tomato"><i class="fas fa-trash-alt"></i></span></a>
+                                    <a title="Delete" onclick="return confirm('Are you sure you want to delete this Account')" href="{{route('investmentclub.accounts.delete',$account->id)}}"><span style="color:tomato"><i class="fas fa-trash-alt"></i></span></a>
                                 </td>
                             </tr>
 

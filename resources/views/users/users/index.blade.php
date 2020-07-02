@@ -30,11 +30,11 @@
 
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fas fa-minus"></i>
+                <span class="fas fa-minus"></span>
                 </button>
                 <div class="btn-group">
                 <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
-                    <i class="fas fa-plus"></i>
+                    <span class="fas fa-plus"></span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" role="menu">
                     <a href="{{route('investmentclub.users.create')}}" class="dropdown-item" >New User</a>
@@ -54,7 +54,6 @@
                                 <th>Status</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Phone Number</th>
                                 <th>Role</th>
                                 <th>Action</th>
                             </tr>
@@ -64,18 +63,17 @@
                         @foreach ($users as $user)
                             <tr>
                                 <td>@if($user->status==1)
-                                      <a href="#" class="btn btn-xs btn-success"> <i class="fas fa-check"></i></a>
+                                      <span class="badge badge-success"> <span class="fas fa-check"></span></span>
                                     @else
-                                    <a href="#" class="btn btn-xs btn-danger"> <i class="fas fa-times"></i></a>
+                                    <span class="badge badge-danger"> <span class="fas fa-times"></span></span>
 
                                     @endif
                                  </td>
                                 <td>{{$user->name}}</td>
                                 <td>{{$user->email}}</td>
-                                <td>{{$user->phone_number}}</td>
                                 <td>{{$user->getRoleNames()}}</td>
-                                <td><a title="Edit" href="{{route('bustravel.users.edit',$user->id)}}"><i class="fas fa-edit"></i></a>
-                                    <a title="Delete" onclick="return confirm('Are you sure you want to delete this User')" href="{{route('bustravel.users.delete',$user->id)}}"><span style="color:tomato"><i class="fas fa-trash-alt"></i></span></a>
+                                <td><a title="Edit" href="{{route('investmentclub.users.edit',$user->id)}}"><span class="fas fa-edit"></span></a>
+                                    <a title="Delete" onclick="return confirm('Are you sure you want to delete this User {{$user->name}}')" href="{{route('investmentclub.users.delete',$user->id)}}"><span style="color:tomato"><span class="fas fa-trash-alt"></span></span></a>
                                 </td>
                             </tr>
 

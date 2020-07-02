@@ -16,6 +16,9 @@ class UsersController extends Controller
     {
         $this->middleware('web');
         $this->middleware('auth');
+        $this->middleware('can:Manage IC Permissions')->only('permissions','storepermissions','updatepermissions','deletepermissions','deleteroles');
+        $this->middleware('can:Manage IC Roles')->only('createroles','storeroles','editroles','updateroles');
+        $this->middleware('can:View IC Users')->only('users','createusers','storeusers','editusers','updateusers','deleteusers');
     }
 
     //fetching permissions
@@ -185,9 +188,8 @@ class UsersController extends Controller
     public function createusers()
     {
         $roles = Role::all(); //Get all permissions
-        $operators = Operator::where('status', 1)->get();
 
-        return view('investmentclub::.users.users.create', compact('roles', 'operators'));
+        return view('investmentclub::.users.users.create', compact('roles'));
     }
 
     // save Role
@@ -206,11 +208,9 @@ class UsersController extends Controller
         $user->name = request()->input('name');
         $user->email = request()->input('email');
         $user->password = bcrypt(request()->input('password'));
-        $user->phone_number = request()->input('phone_number');
         $user->status = request()->input('status');
-        $user->operator_id = request()->input('operator_id') ?? 0;
         $user->save();
-        $user->assignRole(request()->input('role'));
+        $user->syncRoles(request()->input('role'));
 
         $alerts = [
           'bustravel-flash'         => true,
@@ -225,48 +225,43 @@ class UsersController extends Controller
     public function editusers($id)
     {
         $roles = Role::all(); //Get all permissions
-        $operators = Operator::where('status', 1)->get();
         $user = config('investmentclub.user_model', User::class)::find($id);
         if (is_null($user)) {
             return Redirect::route('investmentclub.users');
         }
 
-        return view('investmentclub::users.users.edit', compact('roles', 'operators', 'user'));
+        return view('investmentclub::users.users.edit', compact('roles', 'user'));
     }
 
     //Upadte Role
     public function updateusers($id, Request $request)
     {
         //saving to the database
-        if (request()->input('newpassword') == '') {
+        if (request()->input('password') == '') {
             $validation = request()->validate([
             'name'  => 'required|max:255|unique:users,name,'.$id,
             'email' => 'required|email|max:255|unique:users,email,'.$id,
             //'password' => 'required|min:7|confirmed',
             //'password_confirmation' => 'required|same:password'
           ]);
-            $user = config('bustravel.user_model', User::class)::find($id);
+            $user = config('investmentclub.user_model', User::class)::find($id);
             $user->name = request()->input('name');
             $user->email = request()->input('email');
-            $user->phone_number = request()->input('phone_number');
             $user->status = request()->input('status');
-            $user->operator_id = request()->input('operator_id') ?? 0;
             $user->save();
             $user->syncRoles(request()->input('role'));
         } else {
             $validation = request()->validate([
             'name'                  => 'required|max:255|unique:users,name,'.$id,
             'email'                 => 'required|email|max:255|unique:users,email,'.$id,
-            'newpassword'           => 'required|min:7|confirmed',
-            'password_confirmation' => 'required|same:newpassword',
+            'password'           => 'required|min:7|confirmed',
+            'password_confirmation' => 'required|same:password',
           ]);
-            $user = config('bustravel.user_model', User::class)::find($id);
+            $user = config('investmentclub.user_model', User::class)::find($id);
             $user->name = request()->input('name');
             $user->email = request()->input('email');
             $user->password = bcrypt(request()->input('password'));
-            $user->phone_number = request()->input('phone_number');
             $user->status = request()->input('status');
-            $user->operator_id = request()->input('operator_id') ?? 0;
             $user->save();
             $user->syncRoles(request()->input('role'));
         }

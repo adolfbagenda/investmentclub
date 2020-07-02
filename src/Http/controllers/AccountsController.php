@@ -16,12 +16,21 @@ class AccountsController extends Controller
     {
         $this->middleware('web');
         $this->middleware('auth');
+        $this->middleware('can:View IC Accounts')->only('index');
+        $this->middleware('can:Delete IC Accounts')->only('edit','update','create','store','delete');
     }
 
     //fetching accounts route('investmentclub.accounts')
     public function index()
     {
+      if(auth()->user()->hasAnyRole('IC User'))
+        {
+         $members = Member::where('user_id',auth()->user()->id)->first();
+         $accounts = Account::where('member_id',$members->id)->get();
+       }else{
         $accounts = Account::all();
+       }
+
 
         return view('investmentclub::accounts.index', compact('accounts'));
     }
@@ -42,8 +51,8 @@ class AccountsController extends Controller
         //saving to the database
         $account = new Account;
         $account->member_id = request()->input('member_id');
-        $account->open_date = request()->input('open_date')??NULL;
-        $account->amount = request()->input('amount')??'0';
+        $account->open_date = request()->input('open_date')??date('Y-m-d');
+        $account->amount = str_replace(',', '', request()->input('amount'))??'0';
         $account->fine = request()->input('fine')??'0';
         $account->last_saving = request()->input('last_saving')??'0';
         $account->status = request()->input('status');
@@ -79,7 +88,7 @@ class AccountsController extends Controller
         $account = Account::find($id);
         $account->member_id = request()->input('member_id');
         $account->open_date = request()->input('open_date')??NULL;
-        $account->amount = request()->input('amount');
+        $account->amount = str_replace(',', '', request()->input('amount'));
         $account->fine = request()->input('fine');
         $account->status = request()->input('status');
         $account->save();

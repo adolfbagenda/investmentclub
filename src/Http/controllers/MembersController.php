@@ -9,19 +9,33 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
+use adolfbagenda\InvestmentClub\ToastNotification;
+use adolfbagenda\InvestmentClub\FileUpload;
 
 class MembersController extends Controller
 {
+  public $path = 'app/public/photos',
+         $thumbnails = 'app/public/photo_thumbs';
     public function __construct()
     {
         $this->middleware('web');
         $this->middleware('auth');
+        $this->middleware('can:View IC Members')->only('index');
+        $this->middleware('can:Update IC Members')->only('edit','update');
+        $this->middleware('can:Create IC Members')->only('create','store','delete');
+
     }
 
     //fetching members route('investmentclub.members')
     public function index()
     {
+      if(auth()->user()->hasAnyRole('IC User'))
+        {
+         $members = Member::where('user_id',auth()->user()->id)->get();
+       }else{
         $members = Member::all();
+       }
+
 
         return view('investmentclub::members.index', compact('members'));
     }
@@ -38,22 +52,21 @@ class MembersController extends Controller
         //validation
         $validation = request()->validate(Member::$rules);
         // saving the Image image
-        if($request->hasFile('picture'))
-       {
-             $path = public_path('members/photos');
-             // creating logos folder if doesnot exit
-             if(!File::isDirectory($path))
-             {
-                 File::makeDirectory($path, 0777, true, true);
-             }
-             $fname =    Str::lower(request()->input('first_name'));
-             $lname =    Str::lower(request()->input('last_name'));
-             $resultString = str_replace(' ', '', $fname.$lname);
-             $photoname = $resultString.'_'.time().'.'.request()->picture->getClientOriginalExtension();
-             request()->picture->move($path, $photoname);
-       }
+        if ($request->hasFile('picture')) {
+     $image_upload =request()->picture;
+     $title= request()->input('first_name').request()->input('last_name');
+    $photoname=  FileUpload::upload($image_upload,$this->path,$this->thumbnails,$title);
+  }
         //saving to the database
+        $user_class = config('investmentclub.user_model', User::class);
+            $user = new $user_class();
+            $user->name= request()->input('first_name').' '.request()->input('middle_name').' '.request()->input('last_name');
+            $user->email= request()->input('email');
+            $user->password=bcrypt('password');
+            $user->save();
+            $user->syncRoles('IC User');
         $member = new Member;
+        $member->user_id =$user->id;
         $member->first_name = request()->input('first_name');
         $member->middle_name = request()->input('middle_name');
         $member->last_name = request()->input('last_name');
@@ -80,22 +93,17 @@ class MembersController extends Controller
         $member->status = request()->input('status');
         $member->status_reason = request()->input('status_reason');
         $member->save();
+        $user->status =$member->status;
+        $user->save();
         $account = new Account;
         $account->member_id = $member->id;
-        $account->open_date = request()->input('open_date')??NULL;
+        $account->open_date = request()->input('open_date')??date('Y-m-d');
         $account->amount = request()->input('amount')??'0';
         $account->fine = request()->input('fine')??'0';
         $account->last_saving = request()->input('last_saving')??'0';
         $account->status = request()->input('status');
         $account->save();
-        $alerts = [
-        'bustravel-flash'         => true,
-        'bustravel-flash-type'    => 'success',
-        'bustravel-flash-title'   => 'Member Saving',
-        'bustravel-flash-message' => 'Member has successfully been saved',
-    ];
-
-        return redirect()->route('investmentclub.members')->with($alerts);
+        return redirect()->route('investmentclub.members')->with(ToastNotification::toast($member->first_name.' '.$member->last_name.'  Detials Successfully Saved','Member Saving'));
     }
 
     //operator Edit form route('bustravel.operators.edit')
@@ -113,26 +121,40 @@ class MembersController extends Controller
     public function update($id, Request $request)
     {
         //validation
-        $validation = request()->validate(Member::$rules);
+        $validation = request()->validate([
+          'first_name'      => 'required',
+          'last_name'     => 'required',
+          'email'          =>'required|email|unique:members,email,'.$id,
+        ]);
         // saving logo to Picture folder
         $photoname =request()->input('picture');
-    if($request->hasFile('newpicture'))
-    {
-         $path = public_path('members/photos');
-         // creating logos folder if doesnot exit
-         if(!File::isDirectory($path))
-         {
-             File::makeDirectory($path, 0777, true, true);
-         }
-         $fname =    Str::lower(request()->input('first_name'));
-         $lname =    Str::lower(request()->input('last_name'));
-         $resultString = str_replace(' ', '', $fname.$lname);
-         $photoname = $resultString.'_'.time().'.'.request()->newpicture->getClientOriginalExtension();
-         request()->newpicture->move($path, $photoname);
-
-    }
+        if ($request->hasFile('picture')) {
+          $validation2 = request()->validate(Member::$image_rules);
+           $image_upload =request()->picture;
+           $title= request()->input('first_name').request()->input('last_name');
+          $photoname=  FileUpload::upload($image_upload,$this->path,$this->thumbnails,$title);
+        }
         //saving to the database
         $member = Member::find($id);
+        $user= config('investmentclub.user_model', User::class)::find($member->user_id);
+        if($user){
+          $user->email=request()->input('email');
+          $user->status = request()->input('status')??$member->status;
+          $user->save();
+          $UserId =$user->id;
+
+        }else{
+          $user_class = config('investmentclub.user_model', User::class);
+              $user = new $user_class();
+              $user->name= request()->input('first_name').' '.request()->input('middle_name').' '.request()->input('last_name');
+              $user->email= request()->input('email');
+              $user->password=bcrypt('password');
+              $user->status = request()->input('status')??$member->status;
+              $user->save();
+              $user->syncRoles('IC User');
+            $UserId =$user->id;
+        }
+        $member->user_id =$UserId;
         $member->first_name = request()->input('first_name');
         $member->middle_name = request()->input('middle_name');
         $member->last_name = request()->input('last_name');
@@ -155,18 +177,11 @@ class MembersController extends Controller
         $member->email = request()->input('email');
         $member->city = request()->input('city');
         $member->address = request()->input('address');
-        $member->picture = $photoname??NULL;
-        $member->status = request()->input('status');
+        $member->picture = $photoname??$member->picture;
+        $member->status = request()->input('status')??$member->status;
         $member->status_reason = request()->input('status_reason');
         $member->save();
-        $alerts = [
-        'bustravel-flash'         => true,
-        'bustravel-flash-type'    => 'success',
-        'bustravel-flash-title'   => 'Member Updating',
-        'bustravel-flash-message' => 'Member has successfully been updated',
-    ];
-
-        return redirect()->route('investmentclub.members.edit', $id)->with($alerts);
+        return redirect()->route('investmentclub.members.edit', $id)->with(ToastNotification::toast($member->first_name.' '.$member->last_name.'  Detials Successfully Updated','Member Updating'));
     }
 
     //Delete Operator
@@ -175,13 +190,7 @@ class MembersController extends Controller
         $member = Member::find($id);
         $name = $member->first_name.' '. $member->last_name.' '. $member->middle_name;
         $member->delete();
-        $alerts = [
-            'bustravel-flash'         => true,
-            'bustravel-flash-type'    => 'error',
-            'bustravel-flash-title'   => 'Operator Deleted',
-            'bustravel-flash-message' => "Operator , ". $name ."has successfully been deleted",
-        ];
 
-        return Redirect::route('investmentclub.members')->with($alerts);
+        return Redirect::route('investmentclub.members')->with(ToastNotification::toast($name.'  ,has successfully been deleted','Member Deleting','error'));
     }
 }

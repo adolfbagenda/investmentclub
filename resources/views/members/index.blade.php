@@ -49,14 +49,14 @@
                  <table id="example1" class="table table-bordered table-hover table-striped dataTable" role="grid" aria-describedby="example1_info">
                         <thead>
                             <tr>
-                                <th>Status</th>
-                                <th>Picture</th>
-																<th>No #</th>
-																<th>Name</th>
-																<th>Age </th>
-																<th>Gender</th>
-																<th>Tel No</th>
-                                <th>Action</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Picture</th>
+																<th scope="col">No #</th>
+																<th scope="col">Name</th>
+																<th scope="col">Age </th>
+																<th scope="col">Gender</th>
+																<th scope="col">Tel No</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -64,15 +64,15 @@
                         @foreach ($members as $member)
                             <tr>
                               <td>@if($member->status==1)
-                                    <a href="#" class="btn btn-xs btn-success"> <i class="fas fa-check"></i></a>
+                                    <span class="badge badge-success"> <span class="fas fa-check"></span></span>
                                   @else
-                                  <a href="#" class="btn btn-xs btn-danger"> <i class="fas fa-times"></i></a>
+                                  <span class="badge badge-danger">s btn-danger"> <span class="fas fa-times"></span></span>
 
                                   @endif
                                </td>
                                <td>
                                @if($member->picture)
-                                    <img src="{{url('/members/photos/'.$member->picture) }}" width="50px"/>
+                                    <img src="{{url('storage/photo_thumbs/'.$member->picture) }}" width="50px"/>
                                   @endif
                                 </td>
                                 <td>{{sprintf('%05d', $member->id)}}</td>
@@ -94,11 +94,11 @@
                                 </td>
                                 <td>
                                   @if($member->phone_no)
-                                  {{$member->code}} - {{$member->phone_no}}
+                                  {{$member->code}}{{$member->phone_no}}
                                   @endif
                                   </td>
                                 <td><a title="Edit" href="{{route('investmentclub.members.edit',$member->id)}}"><i class="fas fa-edit"></i></a>
-                                    <a title="Delete" onclick="return confirm('Are you sure you want to delete this Employee')" href="{{route('investmentclub.members.delete',$member->id)}}"><span style="color:tomato"><i class="fas fa-trash-alt"></i></span></a>
+                                    <a title="Delete" onclick="return confirm('Are you sure you want to delete this Member {{$member->first_name}} {{$member->middle_name}} {{$member->last_name}}')" href="{{route('investmentclub.members.delete',$member->id)}}"><span style="color:tomato"><i class="fas fa-trash-alt"></i></span></a>
                                 </td>
                             </tr>
 

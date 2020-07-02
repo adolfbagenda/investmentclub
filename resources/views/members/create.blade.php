@@ -206,7 +206,7 @@
                     <div class="form-group col-md-12"><h4>Contact Details</h4><hr></div>
                     <div class="form-group col-md-1">
                           <label for="exampleInputEmail1">Code</label>
-                        <input type="text"  name="code" value="+256" class="form-control {{ $errors->has('code') ? ' is-invalid' : '' }}" id="exampleInputEmail1" placeholder="Enter Phone Number" >
+                        <input type="text"  name="code" value="256" class="form-control {{ $errors->has('code') ? ' is-invalid' : '' }}" id="exampleInputEmail1" placeholder="Enter Phone Number" >
                         @if ($errors->has('code'))
                             <span class="invalid-feedback">
                                 <strong>{{ $errors->first('code') }}</strong>

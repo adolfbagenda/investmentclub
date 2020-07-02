@@ -66,9 +66,9 @@
                             <tr>
                               <td>
                                 @if($payment->status==1)
-                                    <a href="#" class="btn btn-xs btn-success"> <i class="fas fa-check"></i></a>
+                                    <span class="badge badge-success"><span class="fas fa-check"></span></span>
                                   @else
-                                  <a href="#" class="btn btn-xs btn-danger"> <i class="fas fa-times"></i></a>
+                                  <span class="badge badge-danger"> <span class="fas fa-times"></span></span>
                                   @endif
                                </td>
                                 <td>{{ $payment->id}}</td>
@@ -79,7 +79,7 @@
                                 <td>{{Carbon\Carbon::parse($payment->pay_date)->format('d-m-Y')}}</td>
                                 <td>{{Carbon\Carbon::parse($payment->created_at)->format('d-m-Y')}}</td>
                                 <td><a title="Edit" href="{{route('investmentclub.payments.edit',$payment->id)}}"><i class="fas fa-edit"></i></a>
-                                    <a title="Delete" onclick="return confirm('Are you sure you want to delete this Payment')" href="{{route('investmentclub.payments.delete',$payment->id)}}"><span style="color:tomato"><i class="fas fa-trash-alt"></i></span></a>
+                                    <a title="Delete" onclick="return confirm('Are you sure you want to delete this Payment {{number_format($payment->amount,0)}}')" href="{{route('investmentclub.payments.delete',$payment->id)}}"><span style="color:tomato"><i class="fas fa-trash-alt"></i></span></a>
                                 </td>
                             </tr>
 
