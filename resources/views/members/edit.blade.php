@@ -222,7 +222,7 @@
                     </div>
                     <div class="form-group col-md-6">
                        @if($member->picture)
-                             <img src="{{url('/storage/photo_thumbs/'.$member->picture) }}" width="100px"/>
+                             <img src="{{url('/storage/photo_thumbs/'.$member->picture) }}" width="100px" alt="{{$member->first_name}} {{$member->middle_name}} {{$member->last_name}}"/>
                        @endif
                     </div>
                     <div class="form-group col-md-12"><h4>Contact Details</h4><hr></div>
@@ -276,10 +276,10 @@
                         <label for="signed" class=" col-md-12 control-label">Status</label>
                         <label class="radio-inline">
                           <input type="radio" id="Active" name="status" value="1"@if(auth()->user()->hasAnyRole('IC User')) disabled @endif  @php echo $member->status == 1? 'checked' :  "" @endphp> Active</label>
-                        </label>
+                        
                        <label class="radio-inline">
                           <input type="radio" id="Deactive" name="status" value="0" @if(auth()->user()->hasAnyRole('IC User')) disabled @endif @php echo $member->status == 0? 'checked' :  "" @endphp> Deactive</label>
-                       </label>
+
                     </div>
                     <div class="form-group col-md-4" id="Divreason">
                           <label for="exampleInputEmail1"> Reason</label>

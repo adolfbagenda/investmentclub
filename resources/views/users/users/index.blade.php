@@ -30,11 +30,11 @@
 
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fas fa-minus"></i>
+                <span class="fas fa-minus"></span>
                 </button>
                 <div class="btn-group">
                 <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
-                    <i class="fas fa-plus"></i>
+                    <span class="fas fa-plus"></span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" role="menu">
                     <a href="{{route('investmentclub.users.create')}}" class="dropdown-item" >New User</a>
@@ -72,8 +72,8 @@
                                 <td>{{$user->name}}</td>
                                 <td>{{$user->email}}</td>
                                 <td>{{$user->getRoleNames()}}</td>
-                                <td><a title="Edit" href="{{route('investmentclub.users.edit',$user->id)}}"><i class="fas fa-edit"></i></a>
-                                    <a title="Delete" onclick="return confirm('Are you sure you want to delete this User {{$user->name}}')" href="{{route('investmentclub.users.delete',$user->id)}}"><span style="color:tomato"><i class="fas fa-trash-alt"></i></span></a>
+                                <td><a title="Edit" href="{{route('investmentclub.users.edit',$user->id)}}"><span class="fas fa-edit"></span></a>
+                                    <a title="Delete" onclick="return confirm('Are you sure you want to delete this User {{$user->name}}')" href="{{route('investmentclub.users.delete',$user->id)}}"><span style="color:tomato"><span class="fas fa-trash-alt"></span></span></a>
                                 </td>
                             </tr>
 
