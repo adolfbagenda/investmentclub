@@ -49,3 +49,6 @@ Route::post('users', 'UsersController@storeusers')->name('investmentclub.users.s
 Route::get('users/{id}/edit', 'UsersController@editusers')->name('investmentclub.users.edit');
 Route::any('users/{id}/update', 'UsersController@updateusers')->name('investmentclub.users.update');
 Route::any('users/{id}/delete', 'UsersController@deleteusers')->name('investmentclub.users.delete');
+Route::get('general_settings', 'SettingsController@general_settings')->name('investmentclub.general_settings');
+Route::post('general_settings', 'SettingsController@store_general_settings')->name('investmentclub.general_settings.store');
+Route::post('general_settings/update', 'SettingsController@update_general_settings')->name('investmentclub.general_settings.update');

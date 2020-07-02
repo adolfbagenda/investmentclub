@@ -23,8 +23,8 @@
     <div class="row">
         <div class="col-md-12">
           <p>
-          <span class="label label-warning ">   Updated {{ $diffs = Carbon\Carbon::parse($account->updated_at)->diffForHumans() }} </span>   &nbsp
-          <span class="label label-success ">   Created {{ $diffs = Carbon\Carbon::parse($account->created_at)->diffForHumans() }} </span>    &nbsp
+        <span class="badge badge-warning">   Updated {{ $diffs = Carbon\Carbon::parse($account->updated_at)->diffForHumans() }} </span>   &nbsp
+          <span class="badge badge-success">  Created {{ $diffs = Carbon\Carbon::parse($account->created_at)->diffForHumans() }} </span>    &nbsp
           </p>
         <div class="card">
             <div class="card-header">
@@ -67,7 +67,7 @@
                   </div>
                   <div class="form-group col-md-4 ">
                       <label for="exampleInputEmail1">Amount</label>
-                      <input type="text"  name="amount" value="{{$account->amount}}" class="form-control {{ $errors->has('amount') ? ' is-invalid' : '' }}" id="exampleInputEmail1" placeholder="Enter Amount" >
+                      <input type="text"  name="amount" value="{{number_format($account->amount,0)}}" class="form-control {{ $errors->has('amount') ? ' is-invalid' : '' }}" id="exampleInputEmail1" placeholder="Enter Amount" >
                       @if ($errors->has('amount'))
                           <span class="invalid-feedback">
                               <strong>{{ $errors->first('amount') }}</strong>

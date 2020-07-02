@@ -77,6 +77,46 @@
                             </span>
                         @endif
                     </div>
+                  </div>
+                  <div class="row">
+                  <div class="form-group col-md-3">
+                    <label>Month</label><br>
+                    <select id="item-selector" class="form-control select2" name="select_startitem_id" style="width:100%">
+                          <option>Select Month</option>
+                       @foreach($months as $month)
+                           <option data-month="{{$month}}"   value="{{$month}}" @php echo $month == date('F') ? 'selected' :  "" @endphp>{{$month}}</option>
+                       @endforeach
+                    </select>
+                  </div>
+
+                <div class="form-group col-md-2"> <br> <button type="button" class="btn btn-success form-control" id="add_item" >Add</button></div>
+              </div>
+                  <div class="row">
+                    <div class="form-group col-md-12">
+                                       <div class="responsive" id="routes">
+                                           <table class="table" id="savings-tbl">
+                                               <caption>Monthly Savings</caption>
+                                               <thead>
+                                                   <tr>
+                                                       <th scope="col"></th>
+                                                       <th scope="col">Amount</th>
+                                                       <th scope="col">Month</th>
+                                                       <th scope="col">Year</th>
+                                                   </tr>
+                                               </thead>
+                                               <tbody>
+                                                 <tr>
+                                                   <td><span class="far fa-trash-alt text-danger" id="del_saving"></span></td>
+                                                   <td><input type="text" class="form-control" name="saving_amount[]" value="{{number_format($monthly_saving,0)}}" required></td>
+                                                   <td><input type="text" class="form-control" name="saving_month[]" value="{{date('F')}}" required readonly></td>
+                                                   <td><td><input type="text" class="form-control" name="saving_year[]" value="{{date('Y')}}" required></td>
+                                                 </tr>
+
+                                               </tbody>
+                                           </table>
+                                       </div>
+                                     </div>
+
                     <div class="form-group col-md-12 ">
                       <label for="exampleInputEmail1">Description</label>
                       <textarea class="form-control {{ $errors->has('description') ? ' is-invalid' : '' }}" rows="2" placeholder="Enter Description" name="description" >{{old('description')}}</textarea>
@@ -89,10 +129,10 @@
                     <div class=" col-md-3 form-group">
                         <label for="signed" class=" col-md-12 control-label">Status</label>
                         <label class="radio-inline">
-                          <input type="radio" id="Active" name="status" value="1" > Active</label>
+                          <input type="radio" id="Active" name="status" value="1" > Approved</label>
                         </label>
                        <label class="radio-inline">
-                          <input type="radio" id="Deactive" name="status" value="0" checked > Deactive</label>
+                          <input type="radio" id="Deactive" name="status" value="0" checked > Not Approved</label>
                        </label>
                     </div>
                   </div>
@@ -128,28 +168,36 @@
    <script>
        $(function () {
           $('.select2').select2();
-         $("#divspouse").hide();
-         $("#Divreason").hide();
-         if($("#Married").is(":checked"))
-               {
-                  $("#divspouse").show(1000);
-               }
-         $(":input[name=marital_status]:eq(0)").click(function(){
-               $("#divspouse").hide(1000);
-            });
-            $(":input[name=marital_status]:eq(1)").click(function(){
-               $("#divspouse").show(1000);
-            });
-            if($("#Deactive").is(":checked"))
-                  {
-                     $("#Divreason").show(1000);
-                  }
-            $(":input[name=status]:eq(0)").click(function(){
-                  $("#Divreason").hide(1000);
-               });
-               $(":input[name=status]:eq(1)").click(function(){
-                  $("#Divreason").show(1000);
-               });
+          $('#add_item').on('click',function(e){
+       e.preventDefault();
+       //get selected option
+       var uniqueid = Date.now();
+       var month = $('#item-selector').find(":selected").data('month');
+       var row = '';
+       row += '<tr item-id="'+uniqueid+'">';
+       row += '<th><i class="far fa-trash-alt text-danger" id="del_saving"></i></th>';
+       row += '<th><input type="text" class="form-control" name="saving_amount[]" value="{{number_format($monthly_saving,0)}}" required></th>';
+       row += '<td><input type="text" class="form-control" name="saving_month[]" value="'+month+'" required readonly></td>';
+       row += '<td><td><input type="text" class="form-control" name="saving_year[]" value="{{date('Y')}}" required></td>';
+       row += '</tr>';
+         var exists =  0;
+        $("table tbody").find("tr").each(function () {
+            var current_stock_id = $(this).attr('item-id');
+            if(current_stock_id == uniqueid)
+            {
+              exists = exists + 1;
+            }
+          });
+        if(exists == 0)
+        {
+                $("#savings-tbl tbody").append(row);
+        }
+      });
+      $('table[id=savings-tbl] tbody').on('click', '#del_saving', function() {
+          if(confirm("Are you sure?")) {
+              $(this).closest('tr').remove();
+          }
+      });
        })
 </script>
 @stop

@@ -23,8 +23,18 @@ class SavingsController extends Controller
     //fetching accounts route('investmentclub.accounts')
     public function index()
     {
-       $payments =Payment::all();
-        $savings = Saving::all();
+
+       if(auth()->user()->hasAnyRole('IC User'))
+         {
+          $members = Member::where('user_id',auth()->user()->id)->first();
+          $accounts = Account::where('member_id',$members->id)->pluck('id');
+          $payments_ids = Payment::whereIn('account_id',$accounts)->pluck('id');
+          $savings = Saving::whereIn('payment_id',$payments_ids)->orderBy('id','Desc')->get();
+        }else{
+          $payments =Payment::all();
+          $savings = Saving::all();
+        }
+
 
         return view('investmentclub::payments.savings', compact('savings','payments'));
     }

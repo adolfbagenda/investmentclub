@@ -63,7 +63,7 @@
                                 <td>{{$permission->name}}</td>
                                 <td>{{$permission->guard_name}}</td>
                                 <td><a title="Edit" href="#" data-id="{{$permission->id}}" data-name="{{$permission->name}}" data-toggle="modal"  data-target="#editModal"><i class="fas fa-edit"></i></a>
-                                    <a title="Delete" onclick="return confirm('Are you sure you want to delete this Permission')" href="{{route('bustravel.users.permissions.delete',$permission->id)}}"><span style="color:tomato"><i class="fas fa-trash-alt"></i></span></a>
+                                    <a title="Delete" onclick="return confirm('Are you sure you want to delete this Permission')" href="{{route('investmentclub.users.permissions.delete',$permission->id)}}"><span style="color:tomato"><i class="fas fa-trash-alt"></i></span></a>
                                 </td>
                             </tr>
 

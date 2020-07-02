@@ -1,4 +1,4 @@
-@extends('bustravel::backend.layouts.app')
+@extends('investmentclub::layouts.app')
 
 @section('title', 'Users')
 
@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark"><small><a href="{{route('bustravel.users')}}" class="btn btn-info">Back</a></small> Users </h1>
+        <h1 class="m-0 text-dark"><small><a href="{{route('investmentclub.users')}}" class="btn btn-info">Back</a></small> Users </h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -30,7 +30,7 @@
             <div class="card-body">
             <div class="row">
               <div class="col-md-12">
-              <form role="form" action="{{route('bustravel.users.store')}}" method="POST" >
+              <form role="form" action="{{route('investmentclub.users.store')}}" method="POST" >
               {{csrf_field() }}
 
               <div class="box-body">
@@ -66,29 +66,6 @@
                                 <strong>{{ $errors->first('email') }}</strong>
                             </span>
                         @endif
-                    </div>
-                    <div class="form-group col-md-4  ">
-                        <label for="exampleInputEmail1">Phone Number</label>
-                        <input type="text"  name="phone_number" value="{{old('phone_number')}}" class="form-control {{ $errors->has('phone_number') ? ' is-invalid' : '' }}" id="exampleInputEmail1" placeholder="Enter Phone Number"  >
-                        @if ($errors->has('phone_number'))
-                            <span class="invalid-feedback">
-                                <strong>{{ $errors->first('phone_number') }}</strong>
-                            </span>
-                        @endif
-                    </div>
-                    <div class="form-group col-md-4">
-                         <label>Select Operator</label>
-                         <select class="form-control select2 {{ $errors->has('operator_id') ? ' is-invalid' : '' }}" name="operator_id"  placeholder="Select Operator" >
-                           <option value="">Select Operator</option>
-                           @foreach($operators as $operator)
-                               <option value="{{$operator->id}}">{{$operator->name}} ( {{$operator->code}} )</option>
-                           @endforeach
-                         </select>
-                         @if ($errors->has('operator_id'))
-                             <span class="invalid-feedback">
-                                 <strong>{{ $errors->first('operator_id') }}</strong>
-                             </span>
-                         @endif
                     </div>
                     <div class="form-group col-md-12  ">
                     </div>

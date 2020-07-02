@@ -17,4 +17,8 @@ public function account_no()
   {
       return $this->belongsTo(Account::class,'account_id');
   }
+  public function payment_savings()
+  {
+      return $this->hasMany(Saving::class, 'payment_id');
+  }
 }

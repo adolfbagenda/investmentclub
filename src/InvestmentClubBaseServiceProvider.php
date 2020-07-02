@@ -29,7 +29,7 @@ class InvestmentClubBaseServiceProvider extends ServiceProvider
                     'submenu' => [
                         [
                             'text' => 'General Settings',
-                            'url'  => '#',
+                            'url'  => route('investmentclub.general_settings'),
                             'icon' => 'fa fa-cog',
 
                         ],
@@ -124,7 +124,7 @@ class InvestmentClubBaseServiceProvider extends ServiceProvider
                                     'submenu' => [
                                       [
                                           'text' => 'User Accounts',
-                                          'url'  => '#',
+                                          'url'  => route('investmentclub.users'),
                                           'icon' => 'fa fa-lock',
 
                                       ],

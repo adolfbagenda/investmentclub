@@ -23,8 +23,8 @@
     <div class="row">
         <div class="col-md-12">
           <p>
-          <span class="label label-warning ">   Updated {{ $diffs = Carbon\Carbon::parse($payment->updated_at)->diffForHumans() }} </span>   &nbsp
-          <span class="label label-success ">   Created {{ $diffs = Carbon\Carbon::parse($payment->created_at)->diffForHumans() }} </span>    &nbsp
+          <span class="badge badge-warning">   Updated {{ $diffs = Carbon\Carbon::parse($payment->updated_at)->diffForHumans() }} </span>   &nbsp
+          <span class="badge badge-success">   Created {{ $diffs = Carbon\Carbon::parse($payment->created_at)->diffForHumans() }} </span>    &nbsp
           </p>
         <div class="card">
             <div class="card-header">
@@ -67,7 +67,7 @@
                     </div>
                     <div class="form-group col-md-3 ">
                         <label for="exampleInputEmail1">Amount</label>
-                        <input type="text"  name="amount" value="{{$payment->amount}}" class="form-control {{ $errors->has('amount') ? ' is-invalid' : '' }}" id="exampleInputEmail1" placeholder="Enter Amount" >
+                        <input type="text"  name="amount" value="{{number_format($payment->amount,0)}}" class="form-control {{ $errors->has('amount') ? ' is-invalid' : '' }}" id="exampleInputEmail1" placeholder="Enter Amount" @php echo $payment->status == 1 ? 'readonly' :  "" @endphp >
                         @if ($errors->has('amount'))
                             <span class="invalid-feedback">
                                 <strong>{{ $errors->first('amount') }}</strong>
@@ -83,6 +83,48 @@
                             </span>
                         @endif
                     </div>
+                  </div>
+                  <div class="row">
+                  <div class="form-group col-md-3">
+                    <label>Month</label><br>
+                    <select id="item-selector" class="form-control select2" name="select_startitem_id" style="width:100%">
+                          <option>Select Month</option>
+                       @foreach($months as $month)
+                           <option data-month="{{$month}}"   value="{{$month}}" @php echo $month == date('F') ? 'selected' :  "" @endphp>{{$month}}</option>
+                       @endforeach
+                    </select>
+                  </div>
+
+                <div class="form-group col-md-2"> <br> <button type="button" class="btn btn-success form-control" id="add_item" >Add</button></div>
+              </div>
+                    <div class="row">
+                      <div class="form-group col-md-12">
+                                         <div class="responsive" id="routes">
+                                             <table class="table" id="savings-tbl">
+                                                 <caption>Monthly Savings</caption>
+                                                 <thead>
+                                                     <tr>
+                                                         <th scope="col"></th>
+                                                         <th scope="col">Amount</th>
+                                                         <th scope="col">Month</th>
+                                                         <th scope="col">Year</th>
+                                                     </tr>
+                                                 </thead>
+                                                 <tbody>
+                                                   @php $savings=$payment->payment_savings()->get(); @endphp
+                                                   @foreach($savings as $saving)
+                                                   <tr>
+                                                     <td><span class="far fa-trash-alt text-danger" id="del_saving"></span></td>
+                                                     <td><input type="hidden"name="saving_id[]" value="{{$saving->id}}"><input type="text" class="form-control" name="saving_amount[]" value="{{number_format($saving->amount,0)}}" required></td>
+                                                     <td><input type="text" class="form-control" name="saving_month[]" value="{{$saving->month}}" required readonly></td>
+                                                     <td><td><input type="text" class="form-control" name="saving_year[]" value="{{$saving->year}}" required></td>
+                                                   </tr>
+                                                   @endforeach
+
+                                                 </tbody>
+                                             </table>
+                                         </div>
+                                       </div>
                     <div class="form-group col-md-12 ">
                       <label for="exampleInputEmail1">Description</label>
                       <textarea class="form-control {{ $errors->has('description') ? ' is-invalid' : '' }}" rows="2" placeholder="Enter Description" name="description" >{{$payment->description}}</textarea>
@@ -135,6 +177,36 @@
         $(function () {
           $('div.alert').not('.alert-danger').delay(5000).fadeOut(350);
           $('.select2').select2();
+          $('#add_item').on('click',function(e){
+       e.preventDefault();
+       //get selected option
+       var uniqueid = Date.now();
+       var month = $('#item-selector').find(":selected").data('month');
+       var row = '';
+       row += '<tr item-id="'+uniqueid+'">';
+       row += '<th><i class="far fa-trash-alt text-danger" id="del_saving"></i></th>';
+       row += '<th><input type="hidden"name="saving_id[]" value="'+uniqueid+'"><input type="text" class="form-control" name="saving_amount[]" value="{{number_format($monthly_saving,0)}}" required></th>';
+       row += '<td><input type="text" class="form-control" name="saving_month[]" value="'+month+'" required readonly></td>';
+       row += '<td><td><input type="text" class="form-control" name="saving_year[]" value="{{date('Y')}}" required></td>';
+       row += '</tr>';
+         var exists =  0;
+        $("table tbody").find("tr").each(function () {
+            var current_stock_id = $(this).attr('item-id');
+            if(current_stock_id == uniqueid)
+            {
+              exists = exists + 1;
+            }
+          });
+        if(exists == 0)
+        {
+                $("#savings-tbl tbody").append(row);
+        }
+      });
+      $('table[id=savings-tbl] tbody').on('click', '#del_saving', function() {
+          if(confirm("Are you sure?")) {
+              $(this).closest('tr').remove();
+          }
+      });
 
         })
     </script>

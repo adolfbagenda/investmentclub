@@ -16,7 +16,8 @@ class CreateSavingsTable extends Migration
         Schema::create('savings', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('payment_id');
-            $table->date('month')->nullable();
+            $table->string('month')->nullable();
+            $table->string('year')->nullable();
             $table->decimal('amount',12,2)->default(0.00);
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
