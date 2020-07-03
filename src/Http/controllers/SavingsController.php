@@ -31,12 +31,12 @@ class SavingsController extends Controller
           $payments_ids = Payment::whereIn('account_id',$accounts)->pluck('id');
           $savings = Saving::whereIn('payment_id',$payments_ids)->orderBy('id','Desc')->get();
         }else{
-          $payments =Payment::all();
+
           $savings = Saving::all();
         }
 
 
-        return view('investmentclub::payments.savings', compact('savings','payments'));
+        return view('investmentclub::payments.savings', compact('savings'));
     }
 
     // saving a new investment in the database  route('investmentclub.accounts.store')
